@@ -44,7 +44,10 @@ app.use(express.json({ limit: '200mb' }));
 app.use(express.urlencoded({ limit: '200mb', extended: true }));
 
 // Memory Storage for Multer (Upload to RAM first, then stream to Cloudinary)
-const upload = multer({ storage: multer.memoryStorage() });
+const upload = multer({
+    storage: multer.memoryStorage(),
+    limits: { fileSize: 200 * 1024 * 1024 } // 200MB
+});
 
 // --- HELPERS ---
 const uploadFromBuffer = (buffer) => {
