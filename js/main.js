@@ -22,22 +22,34 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Portfolio Generation & Filtering ---
     const grid = document.getElementById('portfolio-grid');
 
-    async function loadPortfolio() {
-        if (!grid) return;
-
-        // Show loading state
-        grid.innerHTML = '<div style="color:#fff; text-align:center; width:100%;">Loading Showreel...</div>';
-
-        try {
-            const res = await fetch('/api/portfolio');
-            if (!res.ok) throw new Error('Failed to load');
-            const items = await res.json();
-            renderPortfolio(items);
-        } catch (e) {
-            console.error(e);
-            // Fallback or error message
-            grid.innerHTML = '<div style="color:#666; text-align:center; width:100%;">Unable to load portfolio. Connect to Server.</div>';
+    function loadPortfolio() {
+        if (!grid || typeof portfolioItems === 'undefined') {
+            if (grid) grid.innerHTML = '<div style="color:#666; text-align:center; width:100%;">No projects found.</div>';
+            return;
         }
+
+        window.portfolioData = portfolioItems; // Store for filtering accesses
+
+        grid.innerHTML = portfolioItems.map((item, index) => `
+            <div class="portfolio-item" data-category="${item.category}" onclick="openLightbox(${index})">
+                <div class="item-image" style="background-image: url('${item.image}');"></div>
+                <div class="viewfinder-overlay">
+                    <div class="crosshair tl"></div>
+                    <div class="crosshair tr"></div>
+                    <div class="crosshair bl"></div>
+                    <div class="crosshair br"></div>
+                    <div class="rec-dot">● REC</div>
+                    <div class="meta-data top-right">ISO 800</div>
+                    <div class="meta-data bottom-left">F/2.8 1/60</div>
+                </div>
+                <div class="item-content">
+                    <h3>${item.title}</h3>
+                    <p>${item.category} // ${item.description}</p>
+                </div>
+            </div>
+        `).join('');
+
+        initializeFilters();
     }
 
     function renderPortfolio(items) {
@@ -99,11 +111,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Clear previous content
         const container = document.querySelector('.lightbox-video-container');
-        container.innerHTML = ''; // wipe iframe or video
+        container.innerHTML = '';
 
         let embedUrl = item.videoUrl || '';
 
-        // Handle Cloudinary/Local Video (MP4)
+        // Handle MP4 (Local or Cloudinary)
         if (embedUrl.endsWith('.mp4') || embedUrl.includes('cloudinary')) {
             const videoTag = document.createElement('video');
             videoTag.src = embedUrl;
@@ -113,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
             videoTag.style.height = '100%';
             container.appendChild(videoTag);
         } else {
-            // Handle External Links (YouTube/Vimeo) - Simplified Parser
+            // Handle External Links (YouTube/Vimeo)
             let iframeSrc = embedUrl;
             if (embedUrl.includes('youtube.com') || embedUrl.includes('youtu.be')) {
                 const vId = embedUrl.split('v=')[1] || embedUrl.split('/').pop();
@@ -140,8 +152,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const lightbox = document.getElementById('lightbox');
         const container = document.querySelector('.lightbox-video-container');
 
-        lightbox.classList.remove('active');
-        container.innerHTML = ''; // Stop video
+        if (lightbox) lightbox.classList.remove('active');
+        if (container) container.innerHTML = '';
         document.body.style.overflow = '';
     };
 
@@ -154,4 +166,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // START
     loadPortfolio();
+
 });
