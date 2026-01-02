@@ -1,25 +1,23 @@
 /**
  * Frame Weavers Official
- * Main Behavior Script
+ * Main Behavior Script (Static V2)
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('Frame Weavers: Cinematic Luxury Initialized');
+    console.log('Frame Weavers: Cinematic Luxury Initialized (Static)');
 
-    // Smooth scroll for anchor links
+    // 1. Smooth scroll for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
             const target = document.querySelector(this.getAttribute('href'));
             if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth'
-                });
+                target.scrollIntoView({ behavior: 'smooth' });
             }
         });
     });
 
-    // --- Portfolio Generation & Filtering ---
+    // 2. Portfolio Generation
     const grid = document.getElementById('portfolio-grid');
 
     function loadPortfolio() {
@@ -31,31 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
         window.portfolioData = portfolioItems; // Store for filtering accesses
 
         grid.innerHTML = portfolioItems.map((item, index) => `
-            <div class="portfolio-item" data-category="${item.category}" onclick="openLightbox(${index})">
-                <div class="item-image" style="background-image: url('${item.image}');"></div>
-                <div class="viewfinder-overlay">
-                    <div class="crosshair tl"></div>
-                    <div class="crosshair tr"></div>
-                    <div class="crosshair bl"></div>
-                    <div class="crosshair br"></div>
-                    <div class="rec-dot">● REC</div>
-                    <div class="meta-data top-right">ISO 800</div>
-                    <div class="meta-data bottom-left">F/2.8 1/60</div>
-                </div>
-                <div class="item-content">
-                    <h3>${item.title}</h3>
-                    <p>${item.category} // ${item.description}</p>
-                </div>
-            </div>
-        `).join('');
-
-        initializeFilters();
-    }
-
-    function renderPortfolio(items) {
-        window.portfolioData = items; // Store for filtering accesses
-
-        grid.innerHTML = items.map((item, index) => `
             <div class="portfolio-item" data-category="${item.category}" onclick="openLightbox(${index})">
                 <div class="item-image" style="background-image: url('${item.image}');"></div>
                 <div class="viewfinder-overlay">
@@ -109,13 +82,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!item || !lightbox) return;
 
-        // Clear previous content
         const container = document.querySelector('.lightbox-video-container');
         container.innerHTML = '';
 
         let embedUrl = item.videoUrl || '';
 
-        // Handle MP4 (Local or Cloudinary)
         if (embedUrl.endsWith('.mp4') || embedUrl.includes('cloudinary')) {
             const videoTag = document.createElement('video');
             videoTag.src = embedUrl;
@@ -125,10 +96,9 @@ document.addEventListener('DOMContentLoaded', () => {
             videoTag.style.height = '100%';
             container.appendChild(videoTag);
         } else {
-            // Handle External Links (YouTube/Vimeo)
             let iframeSrc = embedUrl;
             if (embedUrl.includes('youtube.com') || embedUrl.includes('youtu.be')) {
-                const vId = embedUrl.split('v=')[1] || embedUrl.split('/').pop();
+                const vId = embedUrl.split('v=')[1] || embedUrl.split('/').pop().split('?')[0];
                 iframeSrc = `https://www.youtube.com/embed/${vId}?autoplay=1`;
             }
 
@@ -164,7 +134,5 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // START
     loadPortfolio();
-
 });
