@@ -195,6 +195,9 @@
                 <div class="form-group">
                     <label>Category</label>
                     <select name="category">
+                        <option value="weddings">Weddings</option>
+                        <option value="automotive">Automotive</option>
+                        <option value="events">Events</option>
                         <option value="commercial">Commercial</option>
                         <option value="narrative">Narrative</option>
                         <option value="social">Social Media</option>
@@ -259,7 +262,7 @@
 
             list.innerHTML = items.map((item, index) => `
             <li class="project-item">
-                <img src="../${item.image}" class="thumb" onerror="this.src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='">
+                <img src="${item.image}" class="thumb" onerror="this.src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='">
                 <div class="project-info">
                     <div class="project-title">${item.title}</div>
                     <div class="project-meta">${item.category} • ${item.videoUrl ? 'Has Video' : 'No Video'}</div>
