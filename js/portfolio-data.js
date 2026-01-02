@@ -15,6 +15,6 @@ const portfolioItems = [
         "category": "automotive",
         "description": "Autoshow and DJ event highlight",
         "image": "images/Screenshot 2026-01-02 195109.png",
-        "videoUrl": "videos/Autoshow&Dj.mp4"
+        "videoUrl": "https://www.youtube.com/embed/GtvZtDWBPvc"
     }
 ];
